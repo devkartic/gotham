@@ -73045,9 +73045,9 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 
 function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
 
-function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
 
@@ -73074,12 +73074,51 @@ function (_Component) {
       id: '',
       name: '',
       email: '',
-      login: 1212
+      login: false,
+      token: '',
+      success: ''
     };
+    _this.alertStateHandler = _this.alertStateHandler.bind(_assertThisInitialized(_this));
     return _this;
   }
 
   _createClass(App, [{
+    key: "alertStateHandler",
+    value: function alertStateHandler(data) {
+      this.setState({
+        success: 'Logged in successfully',
+        login: true,
+        token: data.access_token
+      });
+    }
+  }, {
+    key: "hasLoggedInUser",
+    value: function hasLoggedInUser() {
+      if (!this.state.login) return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_login_Login__WEBPACK_IMPORTED_MODULE_4__["default"], {
+        alert: this.alertStateHandler
+      });
+      return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_posts_Post__WEBPACK_IMPORTED_MODULE_3__["default"], null);
+    }
+  }, {
+    key: "hasMessage",
+    value: function hasMessage() {
+      if (this.state.success !== '') {
+        return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+          className: "container"
+        }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+          className: "alert alert-success alert-dismissible fade show",
+          role: "alert"
+        }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("strong", null, "Success!"), " ", this.state.success, ".", react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+          type: "button",
+          className: "close",
+          "data-dismiss": "alert",
+          "aria-label": "Close"
+        }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
+          "aria-hidden": "true"
+        }, "\xD7"))));
+      }
+    }
+  }, {
     key: "render",
     value: function render() {
       return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
@@ -73092,16 +73131,9 @@ function (_Component) {
         className: "card"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "card-header"
-      }, "SPA Application ", react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["Link"], {
-        className: "nav-link btn btn-sm btn-outline-primary float-right",
-        to: '/login'
-      }, "Login")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+      }, "SPA Application "), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "card-body"
-      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["Route"], {
-        exact: true,
-        path: '/login',
-        component: _login_Login__WEBPACK_IMPORTED_MODULE_4__["default"]
-      }))))));
+      }, this.hasMessage(), this.hasLoggedInUser())))));
     }
   }]);
 
@@ -73127,6 +73159,8 @@ if (document.getElementById('app')) {
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_1__);
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -73147,6 +73181,7 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
 
 
 
+
 var Login =
 /*#__PURE__*/
 function (_Component) {
@@ -73164,6 +73199,7 @@ function (_Component) {
     };
     _this.onchangeEmailHandler = _this.onchangeEmailHandler.bind(_assertThisInitialized(_this));
     _this.onchangePasswordHandler = _this.onchangePasswordHandler.bind(_assertThisInitialized(_this));
+    _this.onSubmitHandler = _this.onSubmitHandler.bind(_assertThisInitialized(_this));
     return _this;
   }
 
@@ -73171,22 +73207,35 @@ function (_Component) {
     key: "onchangeEmailHandler",
     value: function onchangeEmailHandler(event) {
       this.setState({
-        email: event.target.value()
+        email: event.target.value
       });
     }
   }, {
     key: "onchangePasswordHandler",
     value: function onchangePasswordHandler(event) {
       this.setState({
-        password: event.target.value()
+        password: event.target.value
       });
     }
   }, {
-    key: "componentDidMount",
-    value: function componentDidMount() {
-      this.setState({
-        email: '',
-        password: ''
+    key: "onSubmitHandler",
+    value: function onSubmitHandler(event) {
+      var _this2 = this;
+
+      event.preventDefault();
+      axios__WEBPACK_IMPORTED_MODULE_1___default.a.post("http://127.0.0.1:8000/api/auth/login", {
+        email: this.state.email,
+        password: this.state.password,
+        headers: {
+          'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+      }).then(function (response) {
+        _this2.props.alert(response.data);
+
+        _this2.setState({
+          email: '',
+          password: ''
+        });
       });
     }
   }, {
@@ -73233,6 +73282,7 @@ function (_Component) {
         className: "form-group"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
         type: "button",
+        onClick: this.onSubmitHandler,
         className: "btn btn-primary"
       }, "Submit"))))))));
     }

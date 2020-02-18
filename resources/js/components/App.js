@@ -12,19 +12,55 @@ class App extends Component{
             id : '',
             name : '',
             email : '',
-            login : 1212
+            login : false,
+            token : '',
+            success: '',
         };
+
+        this.alertStateHandler = this.alertStateHandler.bind(this);
     }
+
+    alertStateHandler(data){
+        this.setState({
+            success:'Logged in successfully',
+            login : true,
+            token : data.access_token
+        });
+    }
+
+
+    hasLoggedInUser(){
+        if(!this.state.login) return <Login alert={this.alertStateHandler} />
+        return <Post />;
+    }
+
+    hasMessage(){
+        if(this.state.success!=='') {
+            return(
+                <div className="container">
+                    <div className="alert alert-success alert-dismissible fade show" role="alert">
+                        <strong>Success!</strong> { this.state.success }.
+                        <button type="button" className="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                </div>
+            )
+        }
+    }
+
     render() {
         return (
             <div className="container">
                 <div className="row justify-content-center">
                     <div className="col-md-8">
                         <div className="card">
-                            <div className="card-header">SPA Application <Link className="nav-link btn btn-sm btn-outline-primary float-right" to={'/login'}>Login</Link></div>
+                            <div className="card-header">SPA Application {/*<Link className="nav-link btn btn-sm btn-outline-primary float-right" to={'/'}>Login</Link>*/}</div>
 
                             <div className="card-body">
-                                <Route exact path={'/login'} component={Login}/>
+                                { this.hasMessage() }
+                                {/*<Route exact path={'/'} component={Login}/>*/}
+                                { this.hasLoggedInUser() }
                             </div>
                         </div>
                     </div>
