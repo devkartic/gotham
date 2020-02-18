@@ -30,7 +30,7 @@ class App extends Component{
 
 
     hasLoggedInUser(){
-        if(!this.state.login) return <Login alert={this.alertStateHandler} />
+        // if(!this.state.login) return <Login alert={this.alertStateHandler} />
         return <Post />;
     }
 

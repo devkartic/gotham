@@ -73094,9 +73094,7 @@ function (_Component) {
   }, {
     key: "hasLoggedInUser",
     value: function hasLoggedInUser() {
-      if (!this.state.login) return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_login_Login__WEBPACK_IMPORTED_MODULE_4__["default"], {
-        alert: this.alertStateHandler
-      });
+      // if(!this.state.login) return <Login alert={this.alertStateHandler} />
       return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_posts_Post__WEBPACK_IMPORTED_MODULE_3__["default"], null);
     }
   }, {
@@ -73316,9 +73314,9 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 
 function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
 
-function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
 
@@ -73340,15 +73338,114 @@ function (_Component) {
     _this.state = {
       id: '',
       title: '',
-      details: '',
-      message: ''
+      description: '',
+      posts: []
     };
+    _this.onchangeTitleHandler = _this.onchangeTitleHandler.bind(_assertThisInitialized(_this));
+    _this.onchangeDescHandler = _this.onchangeDescHandler.bind(_assertThisInitialized(_this));
+    _this.onsubmitHandler = _this.onsubmitHandler.bind(_assertThisInitialized(_this));
     return _this;
   }
 
   _createClass(Post, [{
+    key: "onchangeTitleHandler",
+    value: function onchangeTitleHandler(event) {
+      this.setState({
+        title: event.target.value
+      });
+    }
+  }, {
+    key: "onchangeDescHandler",
+    value: function onchangeDescHandler(event) {
+      this.setState({
+        description: event.target.value
+      });
+    }
+  }, {
+    key: "onsubmitHandler",
+    value: function onsubmitHandler(event) {
+      var _this2 = this;
+
+      event.preventDefault();
+
+      if (this.state.id == "") {
+        axios.post('http://127.0.0.1:8000/api/auth/posts', {
+          title: this.state.title,
+          description: this.state.description,
+          headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+          }
+        }).then(function (response) {
+          _this2.setState({
+            id: '',
+            title: '',
+            description: '',
+            posts: response.data
+          });
+        });
+      } else {
+        axios.patch("http://127.0.0.1:8000/api/auth/posts/".concat(this.state.id), {
+          title: this.state.title,
+          description: this.state.description,
+          headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+          }
+        }).then(function (response) {
+          _this2.setState({
+            id: '',
+            title: '',
+            description: '',
+            posts: response.data
+          });
+        });
+      }
+    }
+  }, {
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      var _this3 = this;
+
+      axios.get("http://127.0.0.1:8000/api/auth/posts").then(function (response) {
+        _this3.setState({
+          id: '',
+          title: '',
+          description: '',
+          posts: response.data
+        });
+      });
+    }
+  }, {
+    key: "onEdit",
+    value: function onEdit(id) {
+      var _this4 = this;
+
+      axios.get("http://127.0.0.1:8000/api/auth/posts/".concat(id, "/edit")).then(function (response) {
+        _this4.setState({
+          id: response.data.id,
+          title: response.data.title,
+          description: response.data.description
+        });
+      });
+    }
+  }, {
+    key: "onDelete",
+    value: function onDelete(id) {
+      var _this5 = this;
+
+      axios["delete"]("http://127.0.0.1:8000/api/auth/posts/".concat(id)).then(function (response) {
+        _this5.setState({
+          id: '',
+          title: '',
+          description: '',
+          posts: response.data
+        });
+      });
+    }
+  }, {
     key: "render",
     value: function render() {
+      var _this6 = this;
+
       return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "container"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
@@ -73359,9 +73456,67 @@ function (_Component) {
         className: "card"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "card-header"
-      }, "Example Component"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+      }, "Post Create"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "card-body"
-      }, "I'm an example component!")))));
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("form", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "form-group"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
+        htmlFor: "title"
+      }, "Post title"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+        type: "text",
+        className: "form-control",
+        id: "title",
+        onChange: this.onchangeTitleHandler,
+        name: "title",
+        value: this.state.title,
+        "aria-describedby": "title",
+        placeholder: "Enter title"
+      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("small", {
+        id: "title",
+        className: "form-text text-muted"
+      }, "We'll never share your email with anyone else.")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "form-group"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
+        htmlFor: "description"
+      }, "Description"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+        type: "text",
+        className: "form-control",
+        onChange: this.onchangeDescHandler,
+        name: "name",
+        value: this.state.description,
+        id: "description",
+        placeholder: "Enter description"
+      })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "form-group"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+        type: "button",
+        onClick: this.onsubmitHandler,
+        className: "btn btn-primary"
+      }, "Submit"))))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "card"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "card-header font-weight-bold"
+      }, "List of Posts"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "card-body"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("table", {
+        className: "table"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("thead", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", {
+        scope: "col"
+      }, "Post title"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", {
+        scope: "col"
+      }, "Description"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", {
+        scope: "col"
+      }, "Action"))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tbody", null, this.state.posts.map(function (post) {
+        return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", {
+          key: post.id.toString()
+        }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, post.title), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, post.description), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+          className: "btn btn-sm btn-outline-warning mr-2",
+          onClick: _this6.onEdit.bind(_this6, post.id)
+        }, "Edit"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+          className: "btn btn-sm btn-outline-danger",
+          onClick: _this6.onDelete.bind(_this6, post.id, post.name)
+        }, "Remove")));
+      }))))))));
     }
   }]);
 
