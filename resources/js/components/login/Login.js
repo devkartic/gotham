@@ -60,7 +60,7 @@ class Login extends Component{
                                     </div>
                                     <div className="form-group">
                                         <label htmlFor="description">Description</label>
-                                        <input type="text" className="form-control" name="password" onChange={this.onchangePasswordHandler} value={this.state.password} id="password" placeholder="Enter password" />
+                                        <input type="password" className="form-control" name="password" onChange={this.onchangePasswordHandler} value={this.state.password} id="password" placeholder="Enter password" />
                                     </div>
                                     <div className="form-group">
                                         <button type="button" onClick={this.onSubmitHandler} className="btn btn-primary">Submit</button>

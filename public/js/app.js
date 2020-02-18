@@ -73094,7 +73094,9 @@ function (_Component) {
   }, {
     key: "hasLoggedInUser",
     value: function hasLoggedInUser() {
-      // if(!this.state.login) return <Login alert={this.alertStateHandler} />
+      if (!this.state.login) return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_login_Login__WEBPACK_IMPORTED_MODULE_4__["default"], {
+        alert: this.alertStateHandler
+      });
       return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_posts_Post__WEBPACK_IMPORTED_MODULE_3__["default"], null);
     }
   }, {
@@ -73269,7 +73271,7 @@ function (_Component) {
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
         htmlFor: "description"
       }, "Description"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
-        type: "text",
+        type: "password",
         className: "form-control",
         name: "password",
         onChange: this.onchangePasswordHandler,
